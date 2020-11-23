@@ -8,6 +8,8 @@ function getDog() {
   fetch(URL)
     .then((resp) => resp.json())
     .then((dogsArray) => dogsArray.forEach((dog) => renderDog(dog)));
+    
+
 }
 
 function renderDog(dog) {
@@ -20,8 +22,7 @@ function renderDog(dog) {
 }
 
 function expand(element, dog) {
-  
-    element.addEventListener("click", () => {
+  element.addEventListener("click", () => {
     let dogInfo = document.getElementById("dog-info");
     let img = document.createElement("img");
 
@@ -35,49 +36,47 @@ function expand(element, dog) {
       button.innerText = "Bad Dog!";
     }
     updateDog(button, dog.id);
-
+    dogInfo.innerHTML = "";
     dogInfo.append(img, header, button);
   });
 }
 
 function updateDog(element, dog) {
-    
-    element.addEventListener("click", (event) => {
-    
-    let buttonValue = document.getElementsByTagName('button')[1]
+  element.addEventListener("click", (event) => {
+    let buttonValue = document.getElementsByTagName("button")[1];
     if (buttonValue.innerText == "Good Dog!") {
-        buttonValue.isGoodDog = false
+      buttonValue.isGoodDog = false;
     } else {
-        buttonValue.isGoodDog = true
+      buttonValue.isGoodDog = true;
     }
 
-    let data = {}
-    data.isGoodDog = buttonValue.isGoodDog
-
+    let data = {};
+    data.isGoodDog = buttonValue.isGoodDog;
 
     fetch(`${URL}/${dog}`, {
       method: "PATCH",
-   headers: { "Content-Type": "application/json" },
-     body: JSON.stringify(data),
-     }).then(newDog => renderDog(newDog))
-    
-    });
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    }).then((newDog) => renderDog(newDog));
+  });
 }
 
+function filterDog(dog) {
+  // if toggle is on = good dog
+  // renderDog should only show good dogs
+  // default is off
+  let filterDog = document.getElementsByTagName("button")[0];
+  filterDog.addEventListener("click", () => {
+    let text = "Filter good dogs:";
+    if (filterDog.innerText == `${text} OFF`) {
+      return (filterDog.innerText = `${text} ON`);
+    } else {
+      return (filterDog.innerText = `${text} OFF`);
+    }
 
-function filterDogs(element, dog) {
-    element.addEventListener('click', () => { 
-        dog.filter((isGoodDog)=> {
-        return dog.isGoodDog === true
-        })
-    })
-    
-    
-    
+    if (filterDog.innerText == `${text} ON` &&  dog.isGoodDog == true){
+        renderDog(dog)
+    }
 
-
-
+  });
 }
-
-
-
